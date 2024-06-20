@@ -5,4 +5,7 @@ export const config = {
   database: {
     uri: process.env.MONGO_URI,
   },
+  auth: {
+    JWT_SECRET: process.env.JWT_SECRET || '1233',
+  },
 }

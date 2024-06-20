@@ -1,17 +1,29 @@
 import 'dotenv/config'
+
 import express from 'express'
-import path from 'path'
-import bodyParser from 'body-parser'
 import morgan from 'morgan'
-import { config } from '@modules/common/infrastructure/config'
+import cors from 'cors'
+import swaggerUi from 'swagger-ui-express'
+
+import { connectToDatabase } from './core/database/config'
+import { config } from './modules/common/infrastructure/config'
+import { swaggerDocs } from './modules/common/infrastructure/swaggerConfig'
+import { errorHandler } from './modules/common/infrastructure/middlewares'
+import { v1Router } from './modules/common/infrastructure/routes'
 
 function bootstrap() {
   const app = express()
+  connectToDatabase()
 
-  app.use(bodyParser.json())
+  app.use(express.json())
+  app.use(cors())
   app.use(morgan('dev'))
 
-  app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')))
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+
+  app.use('/api', v1Router)
+
+  app.use(errorHandler)
 
   const { port } = config.server
 
