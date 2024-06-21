@@ -1,6 +1,10 @@
 import express from 'express'
 import { authController } from './controllers'
-import { authMiddleware } from './middlewares'
+import {
+  authMiddleware,
+  validateSchema,
+} from '../../../common/infrastructure/middlewares'
+import { SignInValidatorSchema, SignUpValidatorSchema } from './validators'
 
 const authRouter = express.Router()
 
@@ -34,7 +38,11 @@ const authRouter = express.Router()
  *       '400':
  *         description: Bad request
  */
-authRouter.post('/sign-in', authController.login.bind(authController))
+authRouter.post(
+  '/sign-in',
+  validateSchema(SignInValidatorSchema),
+  authController.login.bind(authController)
+)
 
 /**
  * @swagger
@@ -60,7 +68,11 @@ authRouter.post('/sign-in', authController.login.bind(authController))
  *       '400':
  *         description: Bad request
  */
-authRouter.post('/sign-up', authController.register.bind(authController))
+authRouter.post(
+  '/sign-up',
+  validateSchema(SignUpValidatorSchema),
+  authController.register.bind(authController)
+)
 
 /**
  * @swagger

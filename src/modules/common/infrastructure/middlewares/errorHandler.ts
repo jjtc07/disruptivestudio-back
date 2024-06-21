@@ -3,14 +3,10 @@ import { BaseException } from '../../../../core/domain/contracts/BaseException'
 
 export const errorHandler = (
   err: Error,
-  req: Request,
+  _: Request,
   res: Response,
   next: NextFunction
 ) => {
-  console.error(err)
-
-  console.log('err instanceof BaseException: ', err instanceof BaseException)
-
   if (err instanceof BaseException) {
     return res.status(err.statusCode).json({
       error: {
