@@ -1,7 +1,7 @@
 import express from 'express'
 import { roleController } from './controllers'
 
-const roleRouter = express.Router()
+const rolesRouter = express.Router()
 
 /**
  * @swagger
@@ -14,18 +14,12 @@ const roleRouter = express.Router()
  * @swagger
  * /roles:
  *   get:
- *     summary: Get all themes
+ *     summary: Get all user roles
  *     tags:
  *       - Roles V1
- *     parameters:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/SignIn'
  *     responses:
  *       '200':
- *         description: Ok
+ *         description: OK
  *         content:
  *           application/json:
  *             schema:
@@ -33,6 +27,6 @@ const roleRouter = express.Router()
  *       '400':
  *         description: Bad request
  */
-roleRouter.get('/', roleController.getAll.bind(roleController))
+rolesRouter.get('/', roleController.getAll.bind(roleController))
 
-export default roleRouter
+export default rolesRouter
