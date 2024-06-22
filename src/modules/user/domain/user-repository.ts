@@ -15,6 +15,6 @@ export class UserRepository extends Repository<UserDocument> {
   async findOneWithRoles(
     filter: FilterQuery<UserDocument>
   ): Promise<UserDocument | null> {
-    return this.findOne(filter, ['role'])
+    return this.findOne(filter, undefined, ['role'])
   }
 }

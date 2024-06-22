@@ -18,7 +18,7 @@ export class AuthController {
         password,
       })
 
-      res.status(StatusCode.OK).json(user)
+      return res.status(StatusCode.OK).json(user)
     } catch (err) {
       next(err)
     }
@@ -35,7 +35,7 @@ export class AuthController {
         role,
       })
 
-      res.status(StatusCode.CREATED).json(user)
+      return res.status(StatusCode.CREATED).json(user)
     } catch (err: any) {
       next(err)
     }
@@ -45,7 +45,7 @@ export class AuthController {
     try {
       const { user } = req
 
-      res.status(StatusCode.OK)
+      return res.status(StatusCode.OK).json({ user })
     } catch (err: any) {
       next(err)
     }

@@ -1,12 +1,22 @@
 import { IPosts } from '../domain'
 import { PostsRepository } from '../domain/posts-repository'
 
+interface GetAllPostsUseCaseParams {
+  themeId?: string
+}
+
 export class GetAllPostsUseCase {
   constructor(private readonly postsRepository: PostsRepository) {}
 
-  async exec(): Promise<Array<IPosts>> {
+  async exec({ themeId }: GetAllPostsUseCaseParams): Promise<Array<IPosts>> {
+    const query: any = {}
+
+    if (themeId) {
+      query.themes = themeId
+    }
+
     return this.postsRepository.find(
-      {},
+      query,
       {
         _id: 1,
         id: 1,

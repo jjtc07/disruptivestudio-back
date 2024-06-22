@@ -14,9 +14,11 @@ export class PostsController {
     private readonly createPostsUseCase: CreatePostsUseCase
   ) {}
 
-  async getAll(_: Request, res: Response, next: NextFunction) {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const posts = await this.getAllPostsUseCase.exec()
+      const themeId = req?.query?.themeId as string | undefined
+
+      const posts = await this.getAllPostsUseCase.exec({ themeId })
 
       res.status(StatusCode.OK).json(posts)
     } catch (err) {
