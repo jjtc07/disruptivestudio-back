@@ -31,6 +31,6 @@ export const createApp = (): Express => {
 const app = createApp()
 const { port } = config.server
 
-app.listen(port, () => {
+export const server = app.listen(port, () => {
   console.log(`[APP] - Starting application on port ${port}`)
 })

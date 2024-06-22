@@ -1,7 +1,13 @@
 import express from 'express'
 import { themeController } from './controllers'
-import { authMiddleware } from '../../../common/infrastructure/middlewares'
+import {
+  authMiddleware,
+  validatePermission,
+  validateSchema,
+} from '../../../common/infrastructure/middlewares'
 import { uploadMulter } from '../../../common/infrastructure/multer'
+import { PermissionEnum } from '../../../common/enums'
+import { ThemeValidatorSchema } from './validators'
 
 const themeRouter = express.Router()
 
@@ -34,6 +40,7 @@ const themeRouter = express.Router()
 themeRouter.get(
   '/',
   authMiddleware,
+  validatePermission({ requiredPermissions: [PermissionEnum.R] }),
   themeController.getAllThemes.bind(themeController)
 )
 
@@ -64,6 +71,7 @@ themeRouter.get(
 themeRouter.get(
   '/:themeId',
   authMiddleware,
+  validatePermission({ requiredPermissions: [PermissionEnum.R] }),
   themeController.geThemeById.bind(themeController)
 )
 
@@ -124,7 +132,9 @@ themeRouter.get(
 themeRouter.post(
   '/',
   authMiddleware,
+  validatePermission({ requiredPermissions: [PermissionEnum.C] }),
   uploadMulter.single('cover'),
+  validateSchema(ThemeValidatorSchema),
   themeController.create.bind(themeController)
 )
 

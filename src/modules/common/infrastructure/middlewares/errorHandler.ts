@@ -7,6 +7,10 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  // if (process.env.NODE_ENV === 'test') {
+  // console.log(err)
+  // }
+
   if (err instanceof BaseException) {
     return res.status(err.statusCode).json({
       error: {
@@ -18,8 +22,7 @@ export const errorHandler = (
 
   return res.status(500).json({
     error: {
-      // message: 'Internal server error',
-      message: err.message,
+      message: 'Internal server error',
     },
   })
 }

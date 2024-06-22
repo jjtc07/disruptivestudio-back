@@ -1,7 +1,7 @@
 import request from 'supertest'
 
 import { userRepository } from '../../user/domain'
-import { createApp } from '../../../main'
+import { createApp, server } from '../../../main'
 import { Express } from 'express'
 import { setupDatabase } from '../../common/__test__/setup'
 import { roleSeeds } from '../../../../seeds/roles'
@@ -34,8 +34,10 @@ describe('AuthController (E2E)', () => {
   })
 
   afterAll(async () => {
-    await userRepository.deleteMany({})
     await roleRepository.deleteMany({})
+    await userRepository.deleteMany({})
+
+    server.close()
   })
 
   describe('POST /api/v1/auth/login', () => {

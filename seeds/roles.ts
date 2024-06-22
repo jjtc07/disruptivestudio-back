@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { Role, roleRepository } from '../src/modules/role/domain'
+import { roleRepository } from '../src/modules/role/domain'
 import { PermissionEnum } from '../src/modules/common/enums'
 
 export const roleSeeds = async () => {
