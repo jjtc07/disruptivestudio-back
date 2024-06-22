@@ -26,13 +26,13 @@ export class PostsController {
 
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const postsId = req.params?.postsId as string
+      const postId = req.params?.postId as string
 
-      if (!postsId) {
-        throw new BaseException(StatusCode.BAD_REQUEST, 'postsId is required')
+      if (!postId) {
+        throw new BaseException(StatusCode.BAD_REQUEST, 'Post id is required')
       }
 
-      const post = await this.getOnePostsUseCase.exec(postsId)
+      const post = await this.getOnePostsUseCase.exec(postId)
 
       res.status(StatusCode.OK).json(post)
     } catch (err: any) {
@@ -42,7 +42,7 @@ export class PostsController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, description, themes } = req.body
+      const { title, description, themes } = req.body
       const cover = req.file?.path
       const createdBy = req?.user?.id
 
@@ -51,7 +51,7 @@ export class PostsController {
       }
 
       const post = await this.createPostsUseCase.exec({
-        name,
+        title,
         cover,
         description,
         themes,

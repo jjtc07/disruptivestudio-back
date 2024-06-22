@@ -31,9 +31,10 @@ export class Repository<T extends Document> implements IRepository<T> {
 
   async findOne(
     filter: FilterQuery<T>,
+    projection?: ProjectionType<T> | null | undefined,
     populate?: PopulateOptions | (string | PopulateOptions)[]
   ): Promise<T | null> {
-    const response = this.model.findOne(filter)
+    const response = this.model.findOne(filter, projection)
 
     if (populate) {
       response.populate(populate)

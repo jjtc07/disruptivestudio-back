@@ -22,8 +22,6 @@ const postsRouter = express.Router()
  * @swagger
  * /posts:
  *   get:
- *     security:
- *       - bearerAuth: []
  *     summary: Get all posts
  *     tags:
  *       - Posts V1
@@ -33,20 +31,20 @@ const postsRouter = express.Router()
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/User'
+ *               $ref: '#/components/schemas/Post'
  *       '400':
  *         description: Bad request
  */
 postsRouter.get(
   '/',
-  authMiddleware,
-  validatePermission({ requiredPermissions: [PermissionEnum.R] }),
+  // authMiddleware,
+  // validatePermission({ requiredPermissions: [PermissionEnum.R] }),
   postsController.getAll.bind(postsController)
 )
 
 /**
  * @swagger
- * /posts/{postsId}:
+ * /posts/{postId}:
  *   get:
  *     summary: Get posts by ID
  *     tags:
@@ -55,7 +53,7 @@ postsRouter.get(
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: postsId
+ *         name: postId
  *         schema:
  *           type: string
  *         required: true
@@ -69,9 +67,9 @@ postsRouter.get(
  *         description: Not Found
  */
 postsRouter.get(
-  '/:postsId',
-  authMiddleware,
-  validatePermission({ requiredPermissions: [PermissionEnum.R] }),
+  '/:postId',
+  // authMiddleware,
+  // validatePermission({ requiredPermissions: [PermissionEnum.R] }),
   postsController.getById.bind(postsController)
 )
 
@@ -93,7 +91,7 @@ postsRouter.get(
  *             type: object
  *             required: ['name', 'cover', 'description', 'permissions', 'typeContent']
  *             properties:
- *               name:
+ *               title:
  *                 type: string
  *                 example: 'New Posts'
  *               cover:

@@ -7,20 +7,20 @@ export class CreatePostsUseCase {
   constructor(private readonly postsRepository: PostsRepository) {}
 
   async exec({
-    name,
+    title,
     cover,
     description,
     themes,
     createdBy,
   }: {
-    name: string
+    title: string
     cover: string
     description: string
     themes: string[]
     createdBy: string
   }): Promise<IPosts> {
     const postExist = await this.postsRepository.findOne({
-      name: { $regex: new RegExp(`^${name}$`, 'i') },
+      title: { $regex: new RegExp(`^${title}$`, 'i') },
     })
 
     if (postExist) {
@@ -31,7 +31,7 @@ export class CreatePostsUseCase {
     }
 
     const post = await this.postsRepository.create({
-      name,
+      title,
       cover,
       description,
       themes,

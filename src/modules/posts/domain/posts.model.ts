@@ -5,7 +5,7 @@ import { User } from '../../user/domain'
 import { ITheme, Theme } from '../../theme/domain'
 
 export interface IPosts {
-  name: string
+  title: string
   cover: string
   description: string
   themes: ITheme[] | Schema.Types.ObjectId[] | string[]
@@ -18,10 +18,9 @@ export interface PostsDocument extends IPosts, Document {}
 
 export const PostsSchema = new Schema<PostsDocument>(
   {
-    name: {
+    title: {
       type: String,
       required: true,
-      unique: true,
     },
     cover: {
       type: String,
@@ -51,7 +50,8 @@ export const PostsSchema = new Schema<PostsDocument>(
 )
 
 PostsSchema.virtual('coverUrl').get(function () {
-  return `${process.env.BASE_URL}/${this.cover}`
+  // return `${process.env.BASE_URL}/${this.cover}`
+  return this.cover
 })
 
 export const Posts = mongoose.model<PostsDocument>('Posts', PostsSchema)

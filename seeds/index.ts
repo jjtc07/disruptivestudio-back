@@ -3,6 +3,8 @@ import { connectToDatabase } from '../src/core/database/config'
 
 import { roleSeeds } from './roles'
 import { userSeeds } from './user'
+import { themesSeeds } from './themes'
+import { postsSeeds } from './posts'
 
 const seeds = async () => {
   await connectToDatabase()
@@ -10,6 +12,10 @@ const seeds = async () => {
   await roleSeeds()
 
   await userSeeds()
+
+  await themesSeeds()
+
+  await postsSeeds()
 }
 
 seeds()

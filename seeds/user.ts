@@ -1,16 +1,28 @@
 import 'dotenv/config'
+
 import { connectToDatabase } from '../src/core/database/config'
 import { roleRepository } from '../src/modules/role/domain'
-import { userRepository } from '../src/modules/user/domain'
+import { RolesEnum } from '../src/modules/role/enums'
+import { faker } from '@faker-js/faker'
+import { signUpUseCase } from '../src/modules/auth/useCase'
 
 export const userSeeds = async () => {
   connectToDatabase()
+  let resultUser = []
 
   const adminRole = await roleRepository.findOne({
-    key: 'ADMIN',
+    key: RolesEnum.ADMIN,
   })
 
-  if (!adminRole) {
+  const readerRole = await roleRepository.findOne({
+    key: RolesEnum.READER,
+  })
+
+  const creatorRole = await roleRepository.findOne({
+    key: RolesEnum.CREATOR,
+  })
+
+  if (!adminRole || !readerRole || !creatorRole) {
     throw new Error('Role not found. Execute seeds/roles.seed.ts')
   }
 
@@ -21,20 +33,29 @@ export const userSeeds = async () => {
       password: '123456',
       role: adminRole._id,
     },
+    {
+      username: faker.internet.userName(),
+      email: faker.internet.email(),
+      password: 'reader123456',
+      role: readerRole._id,
+    },
+    {
+      username: faker.internet.userName(),
+      email: faker.internet.email(),
+      password: 'creator123456',
+      role: creatorRole._id,
+    },
   ]
 
   for await (const user of users) {
-    const userExist = await userRepository.findOne({
-      $or: [
-        { username: { $regex: new RegExp(`^${user.username}$`, 'i') } },
-        { email: { $regex: new RegExp(`^${user.email}$`, 'i') } },
-      ],
-    })
+    try {
+      const newUser = await signUpUseCase.exec(user)
 
-    if (userExist) {
+      resultUser.push(newUser)
+    } catch (err) {
       continue
     }
-
-    await userRepository.create(user)
   }
+
+  return resultUser
 }

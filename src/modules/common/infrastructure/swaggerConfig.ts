@@ -78,6 +78,28 @@ const options: Options = {
             },
           },
         },
+        Post: {
+          type: 'object',
+          properties: {
+            _id: {
+              type: 'string',
+            },
+            title: {
+              type: 'string',
+            },
+            description: {
+              type: 'string',
+            },
+            coverUrl: {
+              type: 'string',
+              format: 'url',
+            },
+            createBy: {
+              type: 'string',
+              format: 'url',
+            },
+          },
+        },
       },
     },
   },
