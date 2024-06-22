@@ -1,14 +1,17 @@
 import { Request, Response, NextFunction } from 'express'
 import { PermissionEnum } from '../../../common/enums/permissions'
+import { RolesEnum } from '../../../role/enums'
+import { StatusCode } from '../../enums'
 
-interface OptionParam {
+interface ValidatePermissionParams {
+  requiredPermissions?: PermissionEnum[]
   onlyAdmin?: boolean
 }
 
-export const validatePermission = (
-  requiredPermissions: PermissionEnum[],
-  options?: OptionParam
-) => {
+export const validatePermission = ({
+  requiredPermissions = [],
+  onlyAdmin = false,
+}: ValidatePermissionParams) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const user: any = req.user
 
@@ -16,8 +19,10 @@ export const validatePermission = (
       return res.status(401).json({ message: 'User not authenticated' })
     }
 
-    if (options?.onlyAdmin && user?.role?.key !== 'ADMIN') {
-      return res.status(403).json({ message: 'Insufficient permissions' })
+    if (onlyAdmin && user?.role?.key !== RolesEnum.ADMIN) {
+      return res
+        .status(StatusCode.FORBIDDEN)
+        .json({ message: 'Insufficient permissions' })
     }
 
     const userPermissions = user?.role?.permissions
@@ -26,7 +31,9 @@ export const validatePermission = (
     )
 
     if (!hasPermission) {
-      return res.status(403).json({ message: 'Insufficient permissions' })
+      return res
+        .status(StatusCode.FORBIDDEN)
+        .json({ message: 'Insufficient permissions' })
     }
 
     next()

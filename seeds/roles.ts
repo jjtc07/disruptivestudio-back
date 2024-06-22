@@ -1,9 +1,10 @@
 import 'dotenv/config'
-import { roleRepository } from '../src/modules/role/domain'
+import { Role, roleRepository } from '../src/modules/role/domain'
 import { PermissionEnum } from '../src/modules/common/enums'
 
 export const roleSeeds = async () => {
   const date = new Date()
+  let resultRoles = []
 
   const roles = [
     {
@@ -40,9 +41,13 @@ export const roleSeeds = async () => {
     })
 
     if (roleExist) {
+      resultRoles.push(roleExist)
+
       continue
     }
 
-    await roleRepository.create(role)
+    resultRoles.push(await roleRepository.create(role))
   }
+
+  return resultRoles
 }

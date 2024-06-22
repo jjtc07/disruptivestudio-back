@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { SignInUseCase } from '../../../useCase/SignIn'
 import { SignUpUseCase } from '../../../useCase/SignUp'
+import { StatusCode } from '../../../../common/enums'
 
 export class AuthController {
   constructor(
@@ -17,13 +18,13 @@ export class AuthController {
         password,
       })
 
-      res.status(200).json(user)
+      res.status(StatusCode.OK).json(user)
     } catch (err) {
       next(err)
     }
   }
 
-  async register(req: Request, res: Response) {
+  async register(req: Request, res: Response, next: NextFunction) {
     try {
       const { username, email, password, role } = req.body
 
@@ -34,19 +35,19 @@ export class AuthController {
         role,
       })
 
-      res.status(200).json(user)
+      res.status(StatusCode.CREATED).json(user)
     } catch (err: any) {
-      res.status(400).json(err.message)
+      next(err)
     }
   }
 
-  async me(req: Request, res: Response) {
+  async me(req: Request, res: Response, next: NextFunction) {
     try {
       const { user } = req
 
-      res.status(200).json(user)
+      res.status(StatusCode.OK).json(user)
     } catch (err: any) {
-      res.status(400).json(err.message)
+      next(err)
     }
   }
 }

@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose'
 import bcrypt from 'bcryptjs'
-import { User as IUser } from './user'
+import { IUser } from './user'
 import { Role } from '../../role/domain'
 
 export interface UserDocument extends IUser, Document {}

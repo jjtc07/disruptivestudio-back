@@ -1,7 +1,7 @@
 import { ICategory } from '../domain'
 import { CategoryRepository } from '../domain/category-repository'
 
-export class GetAllCategories {
+export class GetAllCategoriesUseCase {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
   async exec(): Promise<Array<ICategory>> {

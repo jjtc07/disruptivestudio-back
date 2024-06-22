@@ -1,10 +1,10 @@
 import { themeRepository } from '../domain'
-import { CreateTheme } from './CreateTheme'
-import { GetAllThemes } from './GetAllTheme'
-import { GetOneTheme } from './GetOneTheme'
+import { CreateThemeUseCase } from './CreateTheme'
+import { GetAllThemesUseCase } from './GetAllTheme'
+import { GetOneThemeUseCase } from './GetOneTheme'
 
-const getAllThemes = new GetAllThemes(themeRepository)
-const getOneTheme = new GetOneTheme(themeRepository)
-const createTheme = new CreateTheme(themeRepository)
+const getAllThemesUseCase = new GetAllThemesUseCase(themeRepository)
+const getOneThemeUseCase = new GetOneThemeUseCase(themeRepository)
+const createThemeUseCase = new CreateThemeUseCase(themeRepository)
 
-export { getAllThemes, getOneTheme, createTheme }
+export { getAllThemesUseCase, getOneThemeUseCase, createThemeUseCase }

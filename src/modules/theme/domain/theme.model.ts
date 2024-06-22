@@ -1,20 +1,22 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
-import { TypeContentEnum } from '../enum'
-import { User } from '../../user/domain/user'
+// import { TypeContentEnum } from '../enum'
+import { IUser } from '../../user/domain/user'
+import { User } from '../../user/domain'
+import { Category, ICategory } from '../../category/domain'
 
-export interface Theme {
+export interface ITheme {
   name: string
   cover: string
   description: string
-  typeContent: Array<TypeContentEnum>
-  permissions: Array<string>
-  createdBy: User | Schema.Types.ObjectId | string
+  categories: ICategory[] | Schema.Types.ObjectId[] | string[]
+  // typeContent: Array<TypeContentEnum>
+  createdBy: IUser | Schema.Types.ObjectId | string
   createdAt: Date
   updatedAt: Date
 }
 
-export interface ThemeDocument extends Theme, Document {}
+export interface ThemeDocument extends ITheme, Document {}
 
 export const ThemeSchema = new Schema<ThemeDocument>(
   {
@@ -30,17 +32,17 @@ export const ThemeSchema = new Schema<ThemeDocument>(
       type: String,
       required: true,
     },
-    typeContent: {
-      type: [String],
-      enum: TypeContentEnum,
-    },
-    permissions: {
-      type: [String],
-      required: true,
+    // typeContent: {
+    //   type: [String],
+    //   enum: TypeContentEnum,
+    // },
+    categories: {
+      type: [Schema.Types.ObjectId],
+      ref: Category,
     },
     createdBy: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: User,
     },
   },
   {

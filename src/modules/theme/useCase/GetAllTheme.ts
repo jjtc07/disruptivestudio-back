@@ -1,12 +1,10 @@
-import { Theme } from '../domain'
+import { ITheme } from '../domain'
 import { ThemeRepository } from '../domain/theme-repository'
 
-export class GetAllThemes {
+export class GetAllThemesUseCase {
   constructor(private readonly themeRepository: ThemeRepository) {}
 
-  async exec(): Promise<Array<Theme>> {
-    const themes = this.themeRepository.find({})
-
-    return themes
+  async exec(): Promise<Array<ITheme>> {
+    return this.themeRepository.find({})
   }
 }

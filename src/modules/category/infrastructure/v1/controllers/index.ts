@@ -1,14 +1,14 @@
 import { CategoryController } from './CategoryController'
 import {
-  createCategory,
-  getAllCategories,
-  getOneCategory,
+  createCategoryUseCase,
+  getAllCategoriesUseCase,
+  getOneCategoryUseCase,
 } from '../../../useCase'
 
 const categoryController = new CategoryController(
-  getAllCategories,
-  getOneCategory,
-  createCategory
+  getAllCategoriesUseCase,
+  getOneCategoryUseCase,
+  createCategoryUseCase
 )
 
 export { categoryController }

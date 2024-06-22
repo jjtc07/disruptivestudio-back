@@ -1,6 +1,13 @@
 import express from 'express'
 import { categoryController } from './controllers'
-import { authMiddleware } from '../../../common/infrastructure/middlewares'
+import {
+  authMiddleware,
+  validatePermission,
+  validateSchema,
+} from '../../../common/infrastructure/middlewares'
+import { CategoryValidatorSchema } from './validators'
+import { PermissionEnum } from '../../../common/enums'
+import { uploadMulter } from '../../../common/infrastructure/multer'
 
 const categoryRouter = express.Router()
 
@@ -39,6 +46,7 @@ const categoryRouter = express.Router()
 categoryRouter.get(
   '/',
   authMiddleware,
+  validatePermission({ requiredPermissions: [PermissionEnum.R] }),
   categoryController.getAll.bind(categoryController)
 )
 
@@ -69,6 +77,7 @@ categoryRouter.get(
 categoryRouter.get(
   '/:id',
   authMiddleware,
+  validatePermission({ requiredPermissions: [PermissionEnum.R] }),
   categoryController.getOne.bind(categoryController)
 )
 
@@ -129,6 +138,9 @@ categoryRouter.get(
 categoryRouter.post(
   '/',
   authMiddleware,
+  validatePermission({ onlyAdmin: true }),
+  uploadMulter.single('banner'),
+  validateSchema(CategoryValidatorSchema),
   categoryController.create.bind(categoryController)
 )
 

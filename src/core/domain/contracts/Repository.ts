@@ -69,6 +69,12 @@ export class Repository<T extends Document> implements IRepository<T> {
     return this.model.findOneAndDelete(filter)
   }
 
+  async deleteMany(filter: FilterQuery<T>): Promise<{ deletedCount: number }> {
+    const result = await this.model.deleteMany(filter)
+
+    return { deletedCount: result.deletedCount }
+  }
+
   async insertMany(docs: T[]): Promise<T[] | null> {
     return this.model.insertMany(docs)
   }

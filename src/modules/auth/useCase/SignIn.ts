@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken'
 import { UserRepository } from '../../user/domain/user-repository'
-import { User } from '../../user/domain/user'
+import { IUser } from '../../user/domain/user'
 import { config } from '../../common/infrastructure/config'
 import { BaseException } from '../../../core/domain/contracts/BaseException'
+import { StatusCode } from '../../common/enums'
 
 export class SignInUseCase {
   constructor(private readonly userRepository: UserRepository) {}
@@ -13,13 +14,13 @@ export class SignInUseCase {
   }: {
     email: string
     password: string
-  }): Promise<User> {
+  }): Promise<IUser> {
     const userExist = await this.userRepository.findOneWithRoles({
       email: { $regex: new RegExp(`^${email}$`, 'i') },
     })
 
     if (!userExist) {
-      throw new BaseException(401, 'Invalid credentials')
+      throw new BaseException(StatusCode.UNAUTHORIZED, 'Invalid credentials')
     }
 
     const isMatch = await this.userRepository.comparePassword(
@@ -27,11 +28,11 @@ export class SignInUseCase {
       password
     )
 
-    const user = userExist.toObject()
-
     if (!isMatch) {
-      throw Error('Invalid credentials')
+      throw new BaseException(StatusCode.UNAUTHORIZED, 'Invalid credentials')
     }
+
+    const user = userExist.toObject()
 
     const token = jwt.sign(
       {
@@ -61,13 +62,13 @@ export class SignInUseCase {
     }
   }
 
-  async me(userId: string): Promise<User> {
+  async me(userId: string): Promise<IUser> {
     const userExists = await this.userRepository.findOne({
       _id: userId,
     })
 
     if (!userExists) {
-      throw new Error('User id not found')
+      throw new BaseException(StatusCode.UNAUTHORIZED, 'User not found')
     }
 
     const user = userExists.toObject()

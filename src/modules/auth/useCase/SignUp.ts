@@ -1,4 +1,6 @@
-import { User } from '../../user/domain/user'
+import { BaseException } from '../../../core/domain/contracts/BaseException'
+import { StatusCode } from '../../common/enums'
+import { IUser } from '../../user/domain/user'
 import { UserRepository } from '../../user/domain/user-repository'
 
 export class SignUpUseCase {
@@ -14,7 +16,7 @@ export class SignUpUseCase {
     email: string
     password: string
     role: string
-  }): Promise<User> {
+  }): Promise<IUser> {
     const userExists = await this.userRepository.findOne({
       $or: [
         { username: { $regex: new RegExp(`^${username}$`, 'i') } },
@@ -23,7 +25,10 @@ export class SignUpUseCase {
     })
 
     if (userExists) {
-      throw new Error('Email or username already in use')
+      throw new BaseException(
+        StatusCode.FORBIDDEN,
+        'Email or username already in use'
+      )
     }
 
     const newUser = { username, email, password, role }

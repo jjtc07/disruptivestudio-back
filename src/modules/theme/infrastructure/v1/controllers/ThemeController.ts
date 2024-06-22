@@ -1,18 +1,18 @@
 import { NextFunction, Request, Response } from 'express'
-import { GetAllThemes } from '../../../useCase/GetAllTheme'
-import { GetOneTheme } from '../../../useCase/GetOneTheme'
-import { CreateTheme } from '../../../useCase/CreateTheme'
+import { GetAllThemesUseCase } from '../../../useCase/GetAllTheme'
+import { GetOneThemeUseCase } from '../../../useCase/GetOneTheme'
+import { CreateThemeUseCase } from '../../../useCase/CreateTheme'
 
 export class ThemeController {
   constructor(
-    private readonly getAllTheme: GetAllThemes,
-    private readonly getOneTheme: GetOneTheme,
-    private readonly createTheme: CreateTheme
+    private readonly getAllThemeUseCase: GetAllThemesUseCase,
+    private readonly getOneThemeUseCase: GetOneThemeUseCase,
+    private readonly createThemeUseCase: CreateThemeUseCase
   ) {}
 
   async getAllThemes(_: Request, res: Response, next: NextFunction) {
     try {
-      const themes = await this.getAllTheme.exec()
+      const themes = await this.getAllThemeUseCase.exec()
 
       res.status(200).json(themes)
     } catch (err) {
@@ -28,7 +28,7 @@ export class ThemeController {
         throw new Error('ThemeId is required')
       }
 
-      const theme = await this.getOneTheme.exec(themeId)
+      const theme = await this.getOneThemeUseCase.exec(themeId)
 
       res.status(200).json(theme)
     } catch (err: any) {
@@ -38,21 +38,28 @@ export class ThemeController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, description, typeContent, permissions } = req.body
+      const {
+        name,
+        description,
+        categories,
+        // typeContent,
+        // permissions
+      } = req.body
       const cover = req.file?.path
-      const userId = req.body.user.id
+      const createdBy = req?.user?.id
 
       if (!cover) {
         throw new Error('Cover is required')
       }
 
-      const theme = await this.createTheme.exec({
+      const theme = await this.createThemeUseCase.exec({
         name,
         cover,
         description,
-        typeContent,
-        permissions,
-        createdBy: userId,
+        // typeContent,
+        // permissions,
+        categories,
+        createdBy,
       })
 
       res.status(201).json(theme)

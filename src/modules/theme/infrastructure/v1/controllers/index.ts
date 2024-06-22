@@ -1,10 +1,14 @@
-import { createTheme, getAllThemes, getOneTheme } from '../../../useCase'
+import {
+  createThemeUseCase,
+  getAllThemesUseCase,
+  getOneThemeUseCase,
+} from '../../../useCase'
 import { ThemeController } from './ThemeController'
 
 const themeController = new ThemeController(
-  getAllThemes,
-  getOneTheme,
-  createTheme
+  getAllThemesUseCase,
+  getOneThemeUseCase,
+  createThemeUseCase
 )
 
 export { themeController }

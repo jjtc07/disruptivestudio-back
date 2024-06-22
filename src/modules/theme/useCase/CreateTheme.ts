@@ -1,39 +1,46 @@
-import { Theme } from '../domain'
+import { BaseException } from '../../../core/domain/contracts/BaseException'
+import { StatusCode } from '../../common/enums'
+import { ITheme } from '../domain'
 import { ThemeRepository } from '../domain/theme-repository'
 import { TypeContentEnum } from '../enum'
 
-export class CreateTheme {
+export class CreateThemeUseCase {
   constructor(private readonly themeRepository: ThemeRepository) {}
 
   async exec({
     name,
     cover,
     description,
-    typeContent,
-    permissions,
+    categories,
+    // typeContent,
+    // permissions,
     createdBy,
   }: {
     name: string
     cover: string
     description: string
-    typeContent: TypeContentEnum[]
-    permissions: string[]
+    categories: string[]
+    // typeContent: TypeContentEnum[]
+    // permissions: string[]
     createdBy: string
-  }): Promise<Theme> {
+  }): Promise<ITheme> {
     const themeExist = await this.themeRepository.findOne({
       name: { $regex: new RegExp(`^${name}$`, 'i') },
     })
 
     if (themeExist) {
-      throw new Error('The theme is already in use')
+      throw new BaseException(
+        StatusCode.BAD_REQUEST,
+        'The theme is already in use'
+      )
     }
 
     const theme = await this.themeRepository.create({
       name,
       cover,
       description,
-      typeContent,
-      permissions,
+      // typeContent,
+      categories,
       createdBy,
     })
 

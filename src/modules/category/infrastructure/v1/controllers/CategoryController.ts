@@ -1,22 +1,27 @@
-import { Request, Response } from 'express'
-import { GetAllCategories } from '../../../useCase/GetAllCategories'
-import { GetOneCategory } from '../../../useCase/GetOneCategory'
-import { CreateCategory } from '../../../useCase/CreateCategory'
+import { NextFunction, Request, Response } from 'express'
+import { GetAllCategoriesUseCase } from '../../../useCase/GetAllCategories'
+import { GetOneCategoryUseCase } from '../../../useCase/GetOneCategory'
+import { CreateCategoryUseCase } from '../../../useCase/CreateCategory'
+import { StatusCode } from '../../../../common/enums'
 
 export class CategoryController {
   constructor(
-    private readonly getAllCategories: GetAllCategories,
-    private readonly getOneCategory: GetOneCategory,
-    private readonly createCategory: CreateCategory
+    private readonly getAllCategoriesUseCase: GetAllCategoriesUseCase,
+    private readonly getOneCategoryUseCase: GetOneCategoryUseCase,
+    private readonly createCategoryUseCase: CreateCategoryUseCase
   ) {}
 
-  async getAll(_: Request, res: Response) {
-    const categories = await this.getAllCategories.exec()
+  async getAll(_: Request, res: Response, next: NextFunction) {
+    try {
+      const categories = await this.getAllCategoriesUseCase.exec()
 
-    res.status(200).json(categories)
+      res.status(StatusCode.OK).json(categories)
+    } catch (err) {
+      next(err)
+    }
   }
 
-  async getOne(req: Request, res: Response) {
+  async getOne(req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.query?.id as unknown as string
 
@@ -24,25 +29,34 @@ export class CategoryController {
         throw new Error('Category id is required')
       }
 
-      const category = this.getOneCategory.exec(id)
+      const category = this.getOneCategoryUseCase.exec(id)
 
-      res.status(200).json(category)
+      res.status(StatusCode.OK).json(category)
     } catch (err: any) {
-      res.status(404).json(err.message)
+      next(err)
     }
   }
 
-  async create(req: Request, res: Response) {
+  async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name } = req.body
+      const { name, content } = req.body
+      const banner = req.file?.path
+      const createdBy = req?.user?.id
 
-      const category = await this.createCategory.exec({
+      if (!banner) {
+        throw new Error('Banner is required')
+      }
+
+      const category = await this.createCategoryUseCase.exec({
         name,
+        content,
+        banner,
+        createdBy,
       })
 
-      res.status(201).json(category)
+      res.status(StatusCode.CREATED).json(category)
     } catch (err: any) {
-      res.status(400).json(err.message)
+      next(err)
     }
   }
 }

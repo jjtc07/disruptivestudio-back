@@ -1,10 +1,10 @@
 import { categoryRepository } from '../domain'
-import { CreateCategory } from './CreateCategory'
-import { GetAllCategories } from './GetAllCategories'
-import { GetOneCategory } from './GetOneCategory'
+import { CreateCategoryUseCase } from './CreateCategory'
+import { GetAllCategoriesUseCase } from './GetAllCategories'
+import { GetOneCategoryUseCase } from './GetOneCategory'
 
-const getAllCategories = new GetAllCategories(categoryRepository)
-const getOneCategory = new GetOneCategory(categoryRepository)
-const createCategory = new CreateCategory(categoryRepository)
+const getAllCategoriesUseCase = new GetAllCategoriesUseCase(categoryRepository)
+const getOneCategoryUseCase = new GetOneCategoryUseCase(categoryRepository)
+const createCategoryUseCase = new CreateCategoryUseCase(categoryRepository)
 
-export { getAllCategories, getOneCategory, createCategory }
+export { getAllCategoriesUseCase, getOneCategoryUseCase, createCategoryUseCase }

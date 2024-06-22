@@ -1,12 +1,12 @@
 import mongoose, { Schema, Document } from 'mongoose'
-import { User } from '../../user/domain/user'
+import { IUser } from '../../user/domain/user'
+import { User } from '../../user/domain'
 
 export interface ICategory {
   name: string
   banner: string
   content: string
-  permissions: Array<string>
-  createdBy: User | Schema.Types.ObjectId
+  createdBy: IUser | Schema.Types.ObjectId | string
   createdAt: Date
   updatedAt: Date
 }
@@ -27,19 +27,25 @@ export const CategorySchema = new Schema<CategoryDocument>(
       type: String,
       required: true,
     },
-    permissions: {
-      type: [String],
-      required: true,
-    },
     createdBy: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: User,
     },
   },
   {
+    toJSON: {
+      virtuals: true,
+    },
+    toObject: {
+      virtuals: true,
+    },
     timestamps: true,
   }
 )
+
+CategorySchema.virtual('bannerUrl').get(function () {
+  return `${process.env.BASE_URL}/${this.banner}`
+})
 
 export const Category = mongoose.model<CategoryDocument>(
   'Category',

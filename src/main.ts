@@ -1,6 +1,6 @@
 import 'dotenv/config'
 
-import express from 'express'
+import express, { Express } from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 import swaggerUi from 'swagger-ui-express'
@@ -11,7 +11,7 @@ import { swaggerDocs } from './modules/common/infrastructure/swaggerConfig'
 import { errorHandler } from './modules/common/infrastructure/middlewares'
 import { v1Router } from './modules/common/infrastructure/routes'
 
-function bootstrap() {
+export const createApp = (): Express => {
   const app = express()
   connectToDatabase()
 
@@ -25,11 +25,12 @@ function bootstrap() {
 
   app.use(errorHandler)
 
-  const { port } = config.server
-
-  app.listen(port, () => {
-    console.log(`[APP] - Starting application on port ${port}`)
-  })
+  return app
 }
 
-bootstrap()
+const app = createApp()
+const { port } = config.server
+
+app.listen(port, () => {
+  console.log(`[APP] - Starting application on port ${port}`)
+})
