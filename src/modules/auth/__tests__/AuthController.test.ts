@@ -63,7 +63,7 @@ describe('AuthController', () => {
 
       await authController.login(req as Request, res as Response, next)
 
-      expect(res.status).toHaveBeenCalledWith(200)
+      expect(res.status).toHaveBeenCalledWith(StatusCode.OK)
       expect(res.json).toHaveBeenCalledWith(userResponse)
     })
 

@@ -27,7 +27,7 @@ export const roleSeeds = async () => {
       updatedAt: date,
     },
     {
-      name: 'Creator',
+      name: 'Creador',
       key: 'CREATOR',
       permissions: [PermissionEnum.C, PermissionEnum.R, PermissionEnum.U],
       createdAt: date,

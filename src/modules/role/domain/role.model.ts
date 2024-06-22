@@ -1,15 +1,15 @@
 import mongoose, { Schema, Document } from 'mongoose'
 import { PermissionEnum } from '../../common/enums'
 
-export interface Role {
+export interface IRole {
   name: string
   key: string
   permissions: PermissionEnum[]
-  createdAt: Date
-  updatedAt: Date
+  createdAt?: Date
+  updatedAt?: Date
 }
 
-export interface RoleDocument extends Role, Document {}
+export interface RoleDocument extends IRole, Document {}
 
 export const RoleSchema = new Schema<RoleDocument>(
   {

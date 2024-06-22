@@ -5,6 +5,7 @@ import {
   UpdateQuery,
   PopulateOptions,
   PipelineStage,
+  ProjectionType,
 } from 'mongoose'
 import { IRepository } from '../interfaces'
 
@@ -43,9 +44,10 @@ export class Repository<T extends Document> implements IRepository<T> {
 
   async find(
     filter: FilterQuery<T>,
+    projection?: ProjectionType<T>,
     populate?: PopulateOptions | (string | PopulateOptions)[]
   ): Promise<T[]> {
-    const response = this.model.find(filter)
+    const response = this.model.find(filter, projection)
 
     if (populate) {
       response.populate(populate)

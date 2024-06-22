@@ -45,7 +45,7 @@ export class AuthController {
     try {
       const { user } = req
 
-      res.status(StatusCode.OK).json(user)
+      res.status(StatusCode.OK)
     } catch (err: any) {
       next(err)
     }

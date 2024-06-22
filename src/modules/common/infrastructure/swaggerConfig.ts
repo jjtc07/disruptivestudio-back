@@ -10,7 +10,7 @@ const options: Options = {
     },
     servers: [
       {
-        url: 'http://localhost:3000/api/v1',
+        url: 'http://localhost:3003/api/v1',
       },
     ],
     components: {
