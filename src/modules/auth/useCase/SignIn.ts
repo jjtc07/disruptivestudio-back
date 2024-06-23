@@ -38,8 +38,8 @@ export class SignInUseCase {
       {
         _id: user._id,
         id: user._id,
-        username: user._id,
-        email: user._id,
+        username: user.username,
+        email: user.email,
         role: {
           name: user.role.name,
           key: user.role.key,

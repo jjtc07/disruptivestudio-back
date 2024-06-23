@@ -1,8 +1,9 @@
 import 'dotenv/config'
 
 import express, { Express } from 'express'
-import morgan from 'morgan'
+import path from 'path'
 import cors from 'cors'
+import morgan from 'morgan'
 import swaggerUi from 'swagger-ui-express'
 
 import { connectToDatabase } from './core/database/config'
@@ -19,6 +20,7 @@ export const createApp = (): Express => {
   app.use(cors())
   app.use(morgan('dev'))
 
+  app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')))
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
   app.use('/api', v1Router)
