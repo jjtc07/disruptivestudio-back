@@ -17,8 +17,9 @@ export class PostsController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const themeId = req?.query?.themeId as string | undefined
+      const search = req?.query?.search as string | undefined
 
-      const posts = await this.getAllPostsUseCase.exec({ themeId })
+      const posts = await this.getAllPostsUseCase.exec({ themeId, search })
 
       res.status(StatusCode.OK).json(posts)
     } catch (err) {

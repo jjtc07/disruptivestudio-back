@@ -3,16 +3,24 @@ import { PostsRepository } from '../domain/posts-repository'
 
 interface GetAllPostsUseCaseParams {
   themeId?: string
+  search?: string
 }
 
 export class GetAllPostsUseCase {
   constructor(private readonly postsRepository: PostsRepository) {}
 
-  async exec({ themeId }: GetAllPostsUseCaseParams): Promise<Array<IPosts>> {
+  async exec({
+    themeId,
+    search,
+  }: GetAllPostsUseCaseParams): Promise<Array<IPosts>> {
     const query: any = {}
 
     if (themeId) {
       query.themes = themeId
+    }
+
+    if (search) {
+      query.title = { $regex: new RegExp(search, 'i') }
     }
 
     return this.postsRepository.find(
