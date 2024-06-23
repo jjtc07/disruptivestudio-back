@@ -44,7 +44,10 @@ export class GetAllPostsUseCase {
           path: 'createdBy',
           select: 'id username email',
         },
-      ]
+      ],
+      {
+        sort: { createdAt: -1 },
+      }
     )
   }
 }
