@@ -40,13 +40,7 @@ export class ThemeController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const {
-        name,
-        description,
-        categories,
-        // typeContent,
-        // permissions
-      } = req.body
+      const { name, description, category } = req.body
       const cover = req.file?.path
       const createdBy = req?.user?.id
 
@@ -58,9 +52,7 @@ export class ThemeController {
         name,
         cover,
         description,
-        // typeContent,
-        // permissions,
-        categories,
+        category,
         createdBy,
       })
 

@@ -50,7 +50,7 @@ export const PostsSchema = new Schema<PostsDocument>(
 )
 
 PostsSchema.virtual('coverUrl').get(function () {
-  if (!this.cover.includes('http')) {
+  if (!this.cover.startsWith('http')) {
     return `${process.env.BASE_URL}/${this.cover}`
   }
 

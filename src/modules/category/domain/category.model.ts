@@ -1,14 +1,17 @@
 import mongoose, { Schema, Document } from 'mongoose'
 import { IUser } from '../../user/domain/user'
 import { User } from '../../user/domain'
+import { TypeContentEnum } from '../enums'
 
 export interface ICategory {
   name: string
+  key: string
   banner: string
   content: string
+  typeContent: TypeContentEnum
   createdBy: IUser | Schema.Types.ObjectId | string
-  createdAt: Date
-  updatedAt: Date
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export interface CategoryDocument extends ICategory, Document {}
@@ -20,11 +23,20 @@ export const CategorySchema = new Schema<CategoryDocument>(
       required: true,
       unique: true,
     },
+    key: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     banner: {
       type: String,
     },
     content: {
       type: String,
+    },
+    typeContent: {
+      type: String,
+      enum: TypeContentEnum,
       required: true,
     },
     createdBy: {

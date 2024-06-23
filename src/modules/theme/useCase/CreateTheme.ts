@@ -2,7 +2,6 @@ import { BaseException } from '../../../core/domain/contracts/BaseException'
 import { StatusCode } from '../../common/enums'
 import { ITheme } from '../domain'
 import { ThemeRepository } from '../domain/theme-repository'
-import { TypeContentEnum } from '../enum'
 
 export class CreateThemeUseCase {
   constructor(private readonly themeRepository: ThemeRepository) {}
@@ -11,17 +10,13 @@ export class CreateThemeUseCase {
     name,
     cover,
     description,
-    categories,
-    // typeContent,
-    // permissions,
+    category,
     createdBy,
   }: {
     name: string
     cover: string
     description: string
-    categories: string[]
-    // typeContent: TypeContentEnum[]
-    // permissions: string[]
+    category: string
     createdBy: string
   }): Promise<ITheme> {
     const themeExist = await this.themeRepository.findOne({
@@ -39,8 +34,7 @@ export class CreateThemeUseCase {
       name,
       cover,
       description,
-      // typeContent,
-      categories,
+      category,
       createdBy,
     })
 

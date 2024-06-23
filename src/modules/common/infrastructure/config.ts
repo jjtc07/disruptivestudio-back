@@ -7,5 +7,6 @@ export const config = {
   },
   auth: {
     JWT_SECRET: process.env.JWT_SECRET || '1233',
+    JWT_EXPIRES_IN: 31536000, // 1 año en segundos
   },
 }

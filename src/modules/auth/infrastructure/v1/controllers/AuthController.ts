@@ -16,6 +16,7 @@ export class AuthController {
       const user = await this.signIn.exec({
         email,
         password,
+        res,
       })
 
       return res.status(StatusCode.OK).json(user)

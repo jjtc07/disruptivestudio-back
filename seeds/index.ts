@@ -5,6 +5,7 @@ import { roleSeeds } from './roles'
 import { userSeeds } from './user'
 import { themesSeeds } from './themes'
 import { postsSeeds } from './posts'
+import { categoriesSeeds } from './categories'
 
 const seeds = async () => {
   await connectToDatabase()
@@ -12,6 +13,8 @@ const seeds = async () => {
   await roleSeeds()
 
   await userSeeds()
+
+  await categoriesSeeds()
 
   await themesSeeds()
 

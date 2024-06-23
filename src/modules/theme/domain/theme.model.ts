@@ -1,6 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
-// import { TypeContentEnum } from '../enum'
 import { IUser } from '../../user/domain/user'
 import { User } from '../../user/domain'
 import { Category, ICategory } from '../../category/domain'
@@ -9,8 +8,7 @@ export interface ITheme {
   name: string
   cover: string
   description: string
-  categories: ICategory[] | Schema.Types.ObjectId[] | string[]
-  // typeContent: Array<TypeContentEnum>
+  category: ICategory | Schema.Types.ObjectId | string
   createdBy: IUser | Schema.Types.ObjectId | string
   createdAt: Date
   updatedAt: Date
@@ -32,12 +30,8 @@ export const ThemeSchema = new Schema<ThemeDocument>(
       type: String,
       required: true,
     },
-    // typeContent: {
-    //   type: [String],
-    //   enum: TypeContentEnum,
-    // },
-    categories: {
-      type: [Schema.Types.ObjectId],
+    category: {
+      type: Schema.Types.ObjectId,
       ref: Category,
     },
     createdBy: {
