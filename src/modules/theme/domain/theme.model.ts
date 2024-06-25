@@ -8,7 +8,7 @@ export interface ITheme {
   name: string
   cover: string
   description: string
-  category: ICategory | Schema.Types.ObjectId | string
+  category: Schema.Types.ObjectId | string | ICategory
   createdBy: IUser | Schema.Types.ObjectId | string
   createdAt: Date
   updatedAt: Date

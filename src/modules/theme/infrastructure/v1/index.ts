@@ -37,12 +37,7 @@ const themeRouter = express.Router()
  *       '400':
  *         description: Bad request
  */
-themeRouter.get(
-  '/',
-  authMiddleware,
-  validatePermission({ requiredPermissions: [PermissionEnum.R] }),
-  themeController.getAllThemes.bind(themeController)
-)
+themeRouter.get('/', themeController.getAllThemes.bind(themeController))
 
 /**
  * @swagger
@@ -91,7 +86,7 @@ themeRouter.get(
  *         multipart/form-data:
  *           schema:
  *             type: object
- *             required: ['name', 'cover', 'description', 'permissions', 'typeContent']
+ *             required: ['name', 'cover', 'description', 'category']
  *             properties:
  *               name:
  *                 type: string
@@ -103,24 +98,10 @@ themeRouter.get(
  *               description:
  *                 type: string
  *                 example: 'Description of the new theme'
- *               typeContent:
- *                 type: array
- *                 items:
- *                   type: string
- *                   enum:
- *                     - image
- *                     - video
- *                     - text
- *               permissions:
- *                 type: array
- *                 items:
- *                   type: string
- *                   enum:
- *                     - C
- *                     - R
- *                     - U
- *                     - D
- *                 description: Array of permissions (at least one is required)
+ *               category:
+ *                 type: string
+ *                 description: 'Category id'
+ *                 example: '507f1f77bcf86cd799439011'
  *     responses:
  *       201:
  *         description: Created
@@ -132,7 +113,7 @@ themeRouter.get(
 themeRouter.post(
   '/',
   authMiddleware,
-  validatePermission({ requiredPermissions: [PermissionEnum.C] }),
+  validatePermission({ onlyAdmin: true }),
   uploadMulter.single('cover'),
   validateSchema(ThemeValidatorSchema),
   themeController.create.bind(themeController)

@@ -3,11 +3,8 @@ import { categoryController } from './controllers'
 import {
   authMiddleware,
   validatePermission,
-  validateSchema,
 } from '../../../common/infrastructure/middlewares'
-import { CategoryValidatorSchema } from './validators'
 import { PermissionEnum } from '../../../common/enums'
-import { uploadMulter } from '../../../common/infrastructure/multer'
 
 const categoryRouter = express.Router()
 
@@ -81,67 +78,67 @@ categoryRouter.get(
   categoryController.getOne.bind(categoryController)
 )
 
-/**
- * @swagger
- * /categories:
- *   post:
- *     summary: Create a new category
- *     tags:
- *       - Categories V1
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       description: Theme object
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             required: ['name', 'cover', 'description', 'permissions', 'typeContent']
- *             properties:
- *               name:
- *                 type: string
- *                 example: 'New Theme'
- *               cover:
- *                 type: string
- *                 format: binary
- *                 description: Binary image file of the cover
- *               description:
- *                 type: string
- *                 example: 'Description of the new theme'
- *               typeContent:
- *                 type: array
- *                 items:
- *                   type: string
- *                   enum:
- *                     - image
- *                     - video
- *                     - text
- *               permissions:
- *                 type: array
- *                 items:
- *                   type: string
- *                   enum:
- *                     - C
- *                     - R
- *                     - U
- *                     - D
- *                 description: Array of permissions (at least one is required)
- *     responses:
- *       201:
- *         description: Created
- *       400:
- *         description: Bad Request
- *       401:
- *         description: Unauthorized
- */
-categoryRouter.post(
-  '/',
-  authMiddleware,
-  validatePermission({ onlyAdmin: true }),
-  uploadMulter.single('banner'),
-  validateSchema(CategoryValidatorSchema),
-  categoryController.create.bind(categoryController)
-)
+// /**
+//  * @swagger
+//  * /categories:
+//  *   post:
+//  *     summary: Create a new category
+//  *     tags:
+//  *       - Categories V1
+//  *     security:
+//  *       - bearerAuth: []
+//  *     requestBody:
+//  *       description: Theme object
+//  *       required: true
+//  *       content:
+//  *         multipart/form-data:
+//  *           schema:
+//  *             type: object
+//  *             required: ['name', 'cover', 'description', 'permissions', 'typeContent']
+//  *             properties:
+//  *               name:
+//  *                 type: string
+//  *                 example: 'New Theme'
+//  *               cover:
+//  *                 type: string
+//  *                 format: binary
+//  *                 description: Binary image file of the cover
+//  *               description:
+//  *                 type: string
+//  *                 example: 'Description of the new theme'
+//  *               typeContent:
+//  *                 type: array
+//  *                 items:
+//  *                   type: string
+//  *                   enum:
+//  *                     - image
+//  *                     - video
+//  *                     - text
+//  *               permissions:
+//  *                 type: array
+//  *                 items:
+//  *                   type: string
+//  *                   enum:
+//  *                     - C
+//  *                     - R
+//  *                     - U
+//  *                     - D
+//  *                 description: Array of permissions (at least one is required)
+//  *     responses:
+//  *       201:
+//  *         description: Created
+//  *       400:
+//  *         description: Bad Request
+//  *       401:
+//  *         description: Unauthorized
+//  */
+// categoryRouter.post(
+//   '/',
+//   authMiddleware,
+//   validatePermission({ onlyAdmin: true }),
+//   uploadMulter.single('banner'),
+//   validateSchema(CategoryValidatorSchema),
+//   categoryController.create.bind(categoryController)
+// )
 
 export default categoryRouter

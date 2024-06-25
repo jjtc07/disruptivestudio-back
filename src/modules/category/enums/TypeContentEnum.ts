@@ -3,3 +3,5 @@ export enum TypeContentEnum {
   VIDEO = 'video',
   TEXT = 'text',
 }
+
+export const typeContentArray: string[] = Object.values(TypeContentEnum)

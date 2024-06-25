@@ -6,7 +6,7 @@ import { PostsRepository } from '../domain/posts-repository'
 export class GetOnePostsUseCase {
   constructor(private readonly postsRepository: PostsRepository) {}
 
-  async exec(postId: string): Promise<IPosts> {
+  async exec(postId: string, user: any): Promise<IPosts> {
     const post = await this.postsRepository.findOne(
       {
         _id: postId,
@@ -18,18 +18,23 @@ export class GetOnePostsUseCase {
         cover: 1,
         coverUrl: 1,
         description: 1,
-        createdAt: 1,
         themes: 1,
         createdBy: 1,
+        createdAt: 1,
+        ...(user ? { content: 1, coverUrl: 1 } : {}),
       },
       [
         {
-          path: 'themes',
-          select: '_id id name coverUrl cover description',
-        },
-        {
           path: 'createdBy',
           select: '_id id username email',
+        },
+        {
+          path: 'themes',
+          select: '_id id name coverUrl cover description category',
+          populate: {
+            path: 'category',
+            select: '_id id name typeContent',
+          },
         },
       ]
     )

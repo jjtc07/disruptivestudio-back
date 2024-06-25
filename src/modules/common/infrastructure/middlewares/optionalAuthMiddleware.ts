@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 
-export const authMiddleware = (
+export const optionalAuthMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
@@ -20,9 +20,9 @@ export const authMiddleware = (
     delete decoded?.password
 
     req.user = decoded
-
+  } catch (err) {
+    console.error(err)
+  } finally {
     next()
-  } catch (error) {
-    return res.status(401).json({ error: 'Invalid token' })
   }
 }

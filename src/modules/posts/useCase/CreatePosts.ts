@@ -1,7 +1,16 @@
 import { BaseException } from '../../../core/domain/contracts/BaseException'
 import { StatusCode } from '../../common/enums'
-import { IPosts } from '../domain'
+import { IContent, IPosts } from '../domain'
 import { PostsRepository } from '../domain/posts-repository'
+
+interface CreatePostsUseCaseParams {
+  title: string
+  cover: string
+  description: string
+  themes: string[]
+  content: IContent[]
+  createdBy: string
+}
 
 export class CreatePostsUseCase {
   constructor(private readonly postsRepository: PostsRepository) {}
@@ -11,14 +20,12 @@ export class CreatePostsUseCase {
     cover,
     description,
     themes,
+    content,
     createdBy,
-  }: {
-    title: string
-    cover: string
-    description: string
-    themes: string[]
-    createdBy: string
-  }): Promise<IPosts> {
+  }: CreatePostsUseCaseParams): Promise<IPosts> {
+    /*
+    TODO: por si se quiere validar que sea una única publicación
+
     const postExist = await this.postsRepository.findOne({
       title: { $regex: new RegExp(`^${title}$`, 'i') },
     })
@@ -26,18 +33,18 @@ export class CreatePostsUseCase {
     if (postExist) {
       throw new BaseException(
         StatusCode.BAD_REQUEST,
-        'The post is already in use'
+        'A post with that title is already in use'
       )
     }
+    */
 
-    const post = await this.postsRepository.create({
+    return this.postsRepository.create({
       title,
       cover,
       description,
       themes,
+      content,
       createdBy,
     })
-
-    return post
   }
 }

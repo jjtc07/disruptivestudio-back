@@ -8,6 +8,7 @@ import {
 import { uploadMulter } from '../../../common/infrastructure/multer'
 import { PermissionEnum } from '../../../common/enums'
 import { PostsValidatorSchema } from './validators'
+import { optionalAuthMiddleware } from '../../../common/infrastructure/middlewares/optionalAuthMiddleware'
 
 const postsRouter = express.Router()
 
@@ -37,8 +38,7 @@ const postsRouter = express.Router()
  */
 postsRouter.get(
   '/',
-  // authMiddleware,
-  // validatePermission({ requiredPermissions: [PermissionEnum.R] }),
+  optionalAuthMiddleware,
   postsController.getAll.bind(postsController)
 )
 
@@ -68,8 +68,7 @@ postsRouter.get(
  */
 postsRouter.get(
   '/:postId',
-  // authMiddleware,
-  // validatePermission({ requiredPermissions: [PermissionEnum.R] }),
+  optionalAuthMiddleware,
   postsController.getById.bind(postsController)
 )
 
@@ -77,7 +76,7 @@ postsRouter.get(
  * @swagger
  * /posts:
  *   post:
- *     summary: Create a new posts
+ *     summary: Create a new post
  *     tags:
  *       - Posts V1
  *     security:
@@ -89,10 +88,15 @@ postsRouter.get(
  *         multipart/form-data:
  *           schema:
  *             type: object
- *             required: ['name', 'cover', 'description', 'permissions', 'typeContent']
+ *             required:
+ *               - title
+ *               - description
+ *               - themes
  *             properties:
  *               title:
  *                 type: string
+ *                 minLength: 3
+ *                 description: Title is required
  *                 example: 'New Posts'
  *               cover:
  *                 type: string
@@ -100,38 +104,41 @@ postsRouter.get(
  *                 description: Binary image file of the cover
  *               description:
  *                 type: string
+ *                 minLength: 3
+ *                 description: Description is required
  *                 example: 'Description of the new posts'
- *               typeContent:
+ *               themes:
  *                 type: array
  *                 items:
  *                   type: string
- *                   enum:
- *                     - image
- *                     - video
- *                     - text
- *               permissions:
+ *                 minItems: 1
+ *                 description: At least one theme is required. Themes not empty
+ *               content:
+ *                 type: string
+ *                 format: uri
+ *                 description: URL of the video content
+ *               contentFiles:
  *                 type: array
  *                 items:
  *                   type: string
- *                   enum:
- *                     - C
- *                     - R
- *                     - U
- *                     - D
- *                 description: Array of permissions (at least one is required)
+ *                   format: binary
+ *                 description: At least one content item is required. Content can be strings or files.
  *     responses:
- *       201:
- *         description: Created
- *       400:
- *         description: Bad Request
- *       401:
+ *       '201':
+ *         description: Post created successfully
+ *       '400':
+ *         description: Bad request
+ *       '401':
  *         description: Unauthorized
  */
 postsRouter.post(
   '/',
   authMiddleware,
   validatePermission({ requiredPermissions: [PermissionEnum.C] }),
-  uploadMulter.single('cover'),
+  uploadMulter.fields([
+    { name: 'cover', maxCount: 1 },
+    { name: 'contentFiles', maxCount: 2 },
+  ]),
   validateSchema(PostsValidatorSchema),
   postsController.create.bind(postsController)
 )
