@@ -82,7 +82,7 @@ describe('AuthController', () => {
       await authController.login(req as Request, res as Response, next)
 
       expect(signInUseCaseMock.exec).toHaveBeenCalled()
-      expect(signInUseCaseMock.exec).toHaveBeenCalledWith(req.body)
+      expect(signInUseCaseMock.exec).toHaveBeenCalledWith({ ...req.body, res })
       expect(next).toHaveBeenCalledWith(
         new BaseException(StatusCode.UNAUTHORIZED, 'Invalid credentials')
       )
