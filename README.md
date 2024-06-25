@@ -7,7 +7,7 @@ Este es un proyecto que requiere Node.js versión 18 o superior.
 1. Clona el repositorio:
 
 ```
-git clone https://github.com/tu-usuario/tu-proyecto.git
+git clone https://github.com/jjtc07/disruptivestudio-back.git
 ```
 
 2. Instala las dependencias:
@@ -22,6 +22,22 @@ npm install
 
 ```
 npm run seeds
+```
+
+4. Para iniciar el proyecto en modo desarrollo ejecutar el script:
+
+```
+npm run start:dev
+```
+
+5. Puedes accedar a la documentación(swagger) del proyecto en la siguiente url de ejemplo
+
+```
+http://tu-host:port/api-docs/
+```
+
+```
+http://localhost:3003/api-docs/
 ```
 
 ## Scripts disponibles
