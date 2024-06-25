@@ -7,6 +7,7 @@ import { themeRepository } from '../src/modules/theme/domain'
 import { faker } from '@faker-js/faker'
 import { getRandomElement, getRandomIndex } from './utils'
 import { postRepository } from '../src/modules/posts/domain'
+import { TypeContentEnum } from '../src/modules/category/enums'
 
 function generatePost() {
   return {
@@ -28,7 +29,7 @@ export const postsSeeds = async () => {
 
   const creators = await userRepository.find({ role: creatorRole?._id })
 
-  const resultThemes = await themeRepository.find({})
+  const resultThemes = await themeRepository.find({}, undefined, ['category'])
 
   const postsData = Array.from({ length: numberOfPublications }, generatePost)
 
@@ -36,18 +37,51 @@ export const postsSeeds = async () => {
     try {
       let countThemes = getRandomIndex(resultThemes)
       const themes: any[] = []
+      const content = []
+      let textFlag = false
+      let imageFlag = false
+      let videoFlag = false
 
       if (countThemes === 0) {
         countThemes = 1
       }
 
       for (let index = 0; index < countThemes; index++) {
-        const idNewElement = String(getRandomElement(resultThemes)?._id)
+        const newElement: any = getRandomElement(resultThemes)
+        const { category } = newElement
+        const idNewElement = String(newElement?._id)
 
         const isDuplicate = themes.some((item) => item === idNewElement)
 
         if (isDuplicate) {
           continue
+        }
+
+        if (category.typeContent === TypeContentEnum.TEXT && !textFlag) {
+          content.push({
+            value: 'https://www.gutenberg.org/cache/epub/16780/pg16780.txt',
+            typeContent: TypeContentEnum.TEXT,
+          })
+
+          textFlag = true
+        }
+
+        if (category.typeContent === TypeContentEnum.IMAGE && !imageFlag) {
+          content.push({
+            value: 'https://loremflickr.com/640/480?lock=4212393353674752',
+            typeContent: TypeContentEnum.IMAGE,
+          })
+
+          imageFlag = true
+        }
+
+        if (category.typeContent === TypeContentEnum.VIDEO && !videoFlag) {
+          content.push({
+            value: 'https://www.youtube.com/watch?v=bQL2FsHe7G4',
+            typeContent: TypeContentEnum.VIDEO,
+          })
+
+          videoFlag = true
         }
 
         themes.push(idNewElement)
@@ -56,6 +90,7 @@ export const postsSeeds = async () => {
       const newPostData: any = {
         ...postData,
         themes,
+        content,
         createdBy: getRandomElement(creators)._id,
       }
 
