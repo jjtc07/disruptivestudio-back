@@ -3,7 +3,10 @@ export const config = {
     port: process.env.PORT || 3003,
   },
   database: {
-    uri: process.env.MONGODB_URI,
+    uri:
+      process.env.NODE_ENV === 'test'
+        ? process.env.MONGODB_URI_TESTS
+        : process.env.MONGODB_URI,
   },
   auth: {
     JWT_SECRET: process.env.JWT_SECRET || '1233',

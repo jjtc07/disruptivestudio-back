@@ -15,12 +15,12 @@ import { getUserToken } from '../../auth/utils'
 import { themeRepository } from '../domain'
 import { categoryRepository } from '../../category/domain'
 import { generateUniqueCategoryNames } from '../../category/utils'
+import { getCategoriesData } from '../../../../seeds/categories'
+import { getRandomElement } from '../../../../seeds/utils'
 
 const mockUserAdmin = userStub({})
 const mockUserReader = userStub({})
 const mockUserCreator = userStub({})
-
-const categoryNames = generateUniqueCategoryNames(3)
 
 describe('ThemeController (E2E)', () => {
   let app: Express
@@ -61,32 +61,13 @@ describe('ThemeController (E2E)', () => {
     userReader = userResponse[1]
     userCreator = userResponse[2]
 
-    const categoryData1 = {
-      name: categoryNames[0],
-      banner: faker.image.url(),
-      content: faker.lorem.sentence(),
-      createdBy: userAdmin.id,
-    }
+    const categoriesData = getCategoriesData(userAdmin)
 
-    const categoryData2 = {
-      name: categoryNames[1],
-      banner: faker.image.url(),
-      content: faker.lorem.sentence(),
-      createdBy: userAdmin.id,
-    }
+    const categoriesPromise = categoriesData.map((categoryData) =>
+      categoryRepository.create(categoryData)
+    )
 
-    const categoryData3 = {
-      name: categoryNames[2],
-      banner: faker.image.url(),
-      content: faker.lorem.sentence(),
-      createdBy: userAdmin.id,
-    }
-
-    resultCategories = await Promise.all([
-      categoryRepository.create(categoryData1),
-      categoryRepository.create(categoryData2),
-      categoryRepository.create(categoryData3),
-    ])
+    resultCategories = await Promise.all(categoriesPromise)
   })
 
   afterAll(async () => {
@@ -159,15 +140,12 @@ describe('ThemeController (E2E)', () => {
       expect(response.status).toBe(StatusCode.FORBIDDEN)
     })
 
-    it('should create a theme if the user role is creator', async () => {
+    it('should return an error if the user does not have ADMIN role', async () => {
       const themeData = {
         name: faker.commerce.department(),
         cover: 'ciencia.jpg',
         description: faker.lorem.sentence(),
-        categories: [
-          String(resultCategories[0]?._id),
-          String(resultCategories[1]?._id),
-        ],
+        category: String(getRandomElement(resultCategories)._id),
       }
 
       const token = getUserToken({
@@ -192,8 +170,42 @@ describe('ThemeController (E2E)', () => {
         .attach('cover', coverFile, themeData.cover)
         .field('name', themeData.name)
         .field('description', themeData.description)
-        .field('categories', themeData.categories[0])
-        .field('categories', themeData.categories[1])
+        .field('category', themeData.category)
+
+      expect(response.status).toBe(StatusCode.FORBIDDEN)
+    })
+
+    it('should create a theme if the user role is admin', async () => {
+      const themeData = {
+        name: faker.commerce.department(),
+        cover: 'ciencia.jpg',
+        description: faker.lorem.sentence(),
+        category: String(getRandomElement(resultCategories)._id),
+      }
+
+      const token = getUserToken({
+        ...mockUserCreator,
+        id: userCreator.id,
+        _id: userCreator.id,
+        role: adminRole,
+      })
+
+      const coverFilePath = path.join(
+        __dirname,
+        'files',
+        'covers',
+        themeData.cover
+      )
+
+      const coverFile = fs.readFileSync(coverFilePath)
+
+      const response = await request(app)
+        .post('/api/v1/themes')
+        .set('Authorization', `Bearer ${token}`)
+        .attach('cover', coverFile, themeData.cover)
+        .field('name', themeData.name)
+        .field('description', themeData.description)
+        .field('category', themeData.category)
 
       expect(response.status).toBe(StatusCode.CREATED)
       expect(response.body).toHaveProperty('name', themeData.name)
@@ -202,7 +214,7 @@ describe('ThemeController (E2E)', () => {
       expect(response.body).toHaveProperty('coverUrl')
     })
 
-    it('should create a category', async () => {
+    it('should create a theme', async () => {
       const user = {
         ...mockUserAdmin,
         id: userAdmin.id,
@@ -216,11 +228,7 @@ describe('ThemeController (E2E)', () => {
         name: faker.commerce.department(),
         cover: 'ciencia.jpg',
         description: faker.lorem.sentence(),
-        categories: [
-          String(resultCategories[0]?._id),
-          String(resultCategories[1]?._id),
-          String(resultCategories[2]?._id),
-        ],
+        category: String(getRandomElement(resultCategories)._id),
       }
 
       const coverFilePath = path.join(
@@ -238,8 +246,7 @@ describe('ThemeController (E2E)', () => {
         .attach('cover', coverFile, themeData.cover)
         .field('name', themeData.name)
         .field('description', themeData.description)
-        .field('categories', themeData.categories[1])
-        .field('categories', themeData.categories[2])
+        .field('category', themeData.category)
 
       expect(response.status).toBe(StatusCode.CREATED)
       expect(response.body).toHaveProperty('name', themeData.name)
